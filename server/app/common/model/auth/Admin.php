@@ -15,9 +15,13 @@
 namespace app\common\model\auth;
 
 use app\common\enum\YesNoEnum;
+use app\common\model\AdminConsultLog;
 use app\common\model\BaseModel;
 use app\common\model\dept\Dept;
 use app\common\model\EnterpriseVerification;
+use app\common\model\ProjectTasks;
+use app\common\model\ProjectTasksAudit;
+use app\common\model\user\User;
 use think\model\concern\SoftDelete;
 use app\common\service\FileService;
 use \think\Model;
@@ -178,8 +182,33 @@ class Admin extends BaseModel
         }
         $sn = $prefix . $rand_str;
         if (Admin::where(['sn' => $sn])->find()) {
-            return self::createUserSn($prefix, $length);
+            return self::createAdminSn($prefix, $length);
         }
         return $sn;
     }
+
+    function projectTasks()
+    {
+        return $this->hasMany(ProjectTasks::class, 'creator', 'id');
+    }
+
+    #招聘顾问
+    function userHr()
+    {
+        return $this->hasMany(ProjectTasksAudit::class, 'creator', 'id')->where('type', 2);
+    }
+
+    #驻场经理
+    function userStationed()
+    {
+        return $this->hasMany(ProjectTasksAudit::class, 'creator', 'id')->where('type', 3);
+    }
+
+    function consultLog()
+    {
+        return $this->hasMany(AdminConsultLog::class, 'admin_id', 'id');
+    }
+
+
+
 }

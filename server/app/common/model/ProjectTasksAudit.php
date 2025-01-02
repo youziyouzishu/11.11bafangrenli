@@ -33,14 +33,14 @@ class ProjectTasksAudit extends BaseModel
 
     /**
      * @notes 关联projectinfo
-     * @return \think\model\relation\HasOne
-     * @author ideaadmin
+
      * @date 2024/01/07 18:30
      */
     public function projectinfo()
     {
-        return $this->hasOne(\app\common\model\task\ProjectTasks::class, 'id', 'project_id')->field('id,project_name');
+        return $this->belongsTo(\app\common\model\task\ProjectTasks::class, 'project_id')->field('id,project_name');
     }
+
 
     /**
      * @notes 关联userinfo

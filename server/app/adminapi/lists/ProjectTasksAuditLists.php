@@ -18,6 +18,7 @@ namespace app\adminapi\lists;
 use app\adminapi\lists\BaseAdminDataLists;
 use app\common\model\ProjectTasksAudit;
 use app\common\lists\ListsSearchInterface;
+use think\facade\Cache;
 
 
 /**
@@ -70,9 +71,9 @@ class ProjectTasksAuditLists extends BaseAdminDataLists implements ListsSearchIn
     public function lists(): array
     {
 
-        return ProjectTasksAudit::with(['projectinfo', 'userinfo', 'contractinfo'])->where($this->searchWhere)
+        $row = ProjectTasksAudit::with(['projectinfo', 'userinfo', 'contractinfo'])->where($this->searchWhere)
             ->where($this->queryWhere())
-            ->field(['la_project_tasks_audit.id', 'la_project_tasks_audit.project_id', 'la_project_tasks_audit.user_id', 'la_project_tasks_audit.recruit_user_id', 'la_project_tasks_audit.onsite_user_id', 'la_project_tasks_audit.type', 'la_project_tasks_audit.status', 'la_project_tasks_audit.work_status',  'la_project_tasks_audit.remarks', 'la_project_tasks_audit.create_time', 'la_project_tasks_audit.update_time', 'la_personal_verification.psn_name as recruit_name', 'c.psn_name as onsite_name', 'e.sn as user_sn', 'f.sn as onsite_sn', 'g.sn as recruit_sn'])
+            ->field(['la_project_tasks_audit.id', 'la_project_tasks_audit.project_id', 'la_project_tasks_audit.user_id', 'la_project_tasks_audit.recruit_user_id', 'la_project_tasks_audit.onsite_user_id', 'la_project_tasks_audit.type', 'la_project_tasks_audit.status', 'la_project_tasks_audit.work_status', 'la_project_tasks_audit.remarks', 'la_project_tasks_audit.create_time', 'la_project_tasks_audit.update_time', 'la_personal_verification.psn_name as recruit_name', 'c.psn_name as onsite_name', 'e.sn as user_sn', 'f.sn as onsite_sn', 'g.sn as recruit_sn'])
             ->leftjoin('la_personal_verification', 'la_project_tasks_audit.recruit_user_id=la_personal_verification.user_id')
             ->leftjoin('la_personal_verification c', 'la_project_tasks_audit.onsite_user_id=c.user_id')
             ->leftjoin('la_user e', 'la_project_tasks_audit.user_id=e.id')
@@ -82,6 +83,12 @@ class ProjectTasksAuditLists extends BaseAdminDataLists implements ListsSearchIn
             ->order(['status' => 'asc', 'id' => 'desc'])
             ->select()
             ->toArray();
+        foreach ($row as &$item) {
+            if ($item['remarks'] == '客户端发起合同申请') {
+                $item['cache'] = Cache::get("ProjectTasksAudit-{$item['id']}");
+            }
+        }
+        return $row;
     }
 
 

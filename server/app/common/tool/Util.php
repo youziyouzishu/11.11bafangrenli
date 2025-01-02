@@ -23,7 +23,7 @@ class Util
     {
         do {
             $invitecode = self::alnum();
-        } while (Admin::where(['invitecode' => $invitecode])->exists());
+        } while (Admin::where(['invitecode' => $invitecode])->find());
         return $invitecode;
     }
 

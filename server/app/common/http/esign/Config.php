@@ -15,7 +15,6 @@ class Config
 
         #'eSignHost' => 'https://smlopenapi.esign.cn', //模拟环境
         'eSignHost' => 'https://openapi.esign.cn', //模拟环境
-        //     'url'=>'https://openapi.esign.cn' //正式环境
     ];
 
     public static function getDomain()

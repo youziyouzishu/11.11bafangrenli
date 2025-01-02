@@ -67,7 +67,6 @@ class AdminLogic extends BaseLogic
                 'multipoint_login' => $params['multipoint_login'],
                 'invitecode' => Util::generateAdminInvitecode()
             ]);
-
             if (in_array(2, $params['role_id']) && !empty($params['invitecode'])) {
                 $staff = Staff::where(['invitecode' => $params['invitecode']])->find();
                 if (!$staff) {

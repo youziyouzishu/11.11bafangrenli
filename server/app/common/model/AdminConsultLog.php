@@ -15,23 +15,20 @@
 namespace app\common\model;
 
 
-use app\common\model\auth\Admin;
 use app\common\model\BaseModel;
 
 
 
 /**
- * EnterpriseVerification模型
- * Class EnterpriseVerification
+ * AdminConsultLog模型
+ * Class AdminConsultLog
  * @package app\common\model
  */
-class EnterpriseVerification extends BaseModel
+class AdminConsultLog extends BaseModel
 {
+    
+    protected $name = 'admin_consult_log';
+    
 
-    protected $name = 'enterprise_verification';
-
-    function admin()
-    {
-        return $this->belongsTo(Admin::class, 'user_id', 'id');
-    }
+    
 }

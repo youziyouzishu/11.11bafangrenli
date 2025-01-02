@@ -1,16 +1,4 @@
 <?php
-// +----------------------------------------------------------------------
-// | 快速开发前后端分离管理后台（PHP版）
-// +----------------------------------------------------------------------
-// | 欢迎阅读学习系统程序代码，建议反馈是我们前进的动力
-// | 开源版本可自由商用，可去除界面版权logo
-// | gitee下载：
-// | github下载：
-
-// | imadmin团队 版权所有 拥有最终解释权
-// +----------------------------------------------------------------------
-// | author: imadmin
-// +----------------------------------------------------------------------
 
 namespace app\adminapi\controller;
 
@@ -18,8 +6,7 @@ use app\adminapi\logic\LoginLogic;
 use app\adminapi\validate\LoginValidate;
 use app\adminapi\validate\auth\AdminValidate;
 use app\adminapi\logic\auth\AdminLogic;
-use app\common\http\Tim\IMAccountImporter;
-use app\common\{model\auth\Admin, model\Staff, service\sms\SmsDriver};
+use app\common\{model\auth\Admin, service\sms\SmsDriver};
 
 /**
  * 管理员登录控制器
@@ -68,6 +55,14 @@ class LoginController extends BaseAdminController
         }else{
             return $this->fail("请选择角色");
         }
+        $invitecode = $tmp['invitecode'] ?? '';
+        if (!empty($invitecode)){
+            $admin = Admin::where(['invitecode'=>$invitecode])->find();
+            if (!$admin){
+                return $this->fail("邀请码错误");
+            }
+            $tmp['pid'] = $admin['id'];
+        }
         $tmp['name'] = $tmp['account'] ?? '';
         $tmp['disable'] = '0';
         $tmp['multipoint_login'] = "1"; //多点登录
@@ -107,78 +102,5 @@ class LoginController extends BaseAdminController
         (new LoginLogic())->logout($this->adminInfo);
         return $this->success();
     }
-}
 
-
-
-
-class Sign
-{
-    private $requestAuthSecret;
-    private $url;
-    private $nonce;
-    private $timestamp;
-
-    public function __construct()
-    {
-
-        $this->url = "https://fc-mp-7a808de8-73cf-4c77-88a8-85569c51ee22.next.bspapp.com/uni-id-co";
-        $this->requestAuthSecret = "245b556adef378ef9057cb9a4934f055";
-        $this->nonce = sprintf("%d", rand());
-        $this->timestamp = time() * 1000;
-    }
-
-    public function getSignature($params)
-    {
-        $paramsStr = $this->getParamsString($params);
-        $signature = hash_hmac('sha256', ((string)$this->timestamp . $paramsStr), ($this->requestAuthSecret . $this->nonce));
-
-        return strtoupper($signature);
-    }
-
-    private function getParamsString($params)
-    {
-        ksort($params);
-
-        $paramsStr = [];
-        foreach ($params as $key => $value) {
-            if (gettype($value) == "array" || gettype($value) == "object") {
-                continue;
-            }
-
-            array_push($paramsStr, $key . '=' . $value);
-        }
-
-        return join('&', $paramsStr);
-    }
-
-    public function sendData($path, $params)
-    {
-        // 将数组编码为JSON格式
-        $jsonData = json_encode($params);
-        // 初始化cURL会话
-        $ch = curl_init($this->url . $path);
-        // 设置cURL选项
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");       // 发送POST请求
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);       // 附加POST提交的数据
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);        // 返回内容作为变量接收，而非直接输出
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json', // 设置发送内容类型为JSON
-            'uni-id-nonce: ' . $this->nonce,
-            'uni-id-timestamp: ' . $this->timestamp,
-            'uni-id-signature: ' . $this->getSignature($params['params']),
-            'Content-Length: ' . strlen($jsonData)             // 设置内容长度
-        ));
-        // 执行cURL会话
-        $result = curl_exec($ch);
-
-        // 检查是否有错误发生
-        if (curl_errno($ch)) {
-            echo 'cURL error: ' . curl_error($ch);
-        }
-
-        // 关闭cURL会话
-        curl_close($ch);
-        return json_decode($result, true);
-    }
 }

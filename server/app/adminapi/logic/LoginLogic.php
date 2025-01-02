@@ -56,6 +56,7 @@ class LoginLogic extends BaseLogic
             }
             IMAccountImporter::AddOne("hr_{$admin->sn}", $nickname);
         }
+
         $orginfo = EnterpriseVerification::where(['user_id' => $admin->id])->find();
         $nickname = "";
         if (!empty($orginfo->org_name)) {
@@ -67,6 +68,7 @@ class LoginLogic extends BaseLogic
         if ($admin->im_user_sign == "") {
             $admin->im_user_sign =  TencentUserSign::Computer("hr_{$admin->sn}");
         }
+
         //用户表登录信息更新
         $admin->login_time = $time;
         $admin->login_ip = request()->ip();

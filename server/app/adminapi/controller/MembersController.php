@@ -59,24 +59,19 @@ class MembersController extends BaseAdminController
             return $this->fail('管理员记录不存在');
         }
 
-
-        // 检查im_list中是否已经存在当前用户的sn
-        if ($admin->im_list) {
-            $imList = explode(',', $admin->im_list);
-            if (!in_array($user['sn'], $imList)) {
-                $imList[] = $user['sn'];
-                if (count($imList) > 30) {
+        $has = $admin->consultLog()->whereTime('create_time', 'today')->where('user_id', $user->id)->find();
+        if (!$has) {
+            if ($admin->consultLog()->whereTime('create_time', 'today')->count() >= 30 && in_array(1, $this->adminInfo['role_id'])) {
+                if ($admin->consult_times <= 0) {
+                    //只有人力公司才限制次数
                     return $this->fail('每日可主动发起沟通超过30次，已达到上限');
+                } else {
+                    $admin->consult_times -= 1;
+                    $admin->save();
                 }
-                $admin->im_list = trim(implode(',', $imList), ",");
-                $admin->save();
             }
-        } else {
-            $admin->im_list = $user['sn'];
-            $admin->save();
+            $admin->consultLog()->save(['user_id' => $user->id]);
         }
-
-
         $protocol = request()->scheme();
         $host = $_SERVER['HTTP_HOST'];
         $url = $protocol . '://' . $host . '/business/im?conversationId=C2Ccl_' . $user['sn'];

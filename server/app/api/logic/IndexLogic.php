@@ -99,7 +99,7 @@ class IndexLogic extends BaseLogic
     {
 
         return DecoratePage::field(['type', 'name', 'data'])
-            ->where(['type' => $id, 'role' => $role])->findOrEmpty()->toArray();;
+            ->where(['type' => $id, 'role' => $role])->findOrEmpty()->toArray();
     }
 
 

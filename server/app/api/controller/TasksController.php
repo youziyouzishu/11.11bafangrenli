@@ -171,7 +171,7 @@ class TasksController extends BaseApiController
     }
 
     /**
-     * @notes 取消收藏
+     * @notes 发起申请
      * @return \think\response\Json
      * @author 张晓科
      * @date 2023/9/20 17:01

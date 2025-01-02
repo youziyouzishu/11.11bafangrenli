@@ -21,7 +21,7 @@
 				</div>
 				<div class="card-footer">
 					<span>电话: {{ maskedPhone(item.psn_mobile) }}</span>
-					<el-button size="mini" type="primary" class="contact-button" @click="openContact(item)">沟通</el-button>
+					<el-button size="mini" type="primary" v-perms="['mems/goutong']" class="contact-button" @click="openContact(item)">沟通</el-button>
 				</div>
 			</el-card>
 			<footer-btns>
@@ -89,7 +89,7 @@ function maskedPhone(phone: string) {
 const openContact = async (item) => {
 	// 假设从 API 获取 URL
 	const contactUrl = await toIm(item.id);
-	console.log(contactUrl.url)
+
 	if (contactUrl) {
 		window.open(contactUrl.url, '_blank');
 	}

@@ -58,8 +58,6 @@ class TasksCollectLists extends BaseApiDataLists
         $field = "a.*,a.click_virtual+a.click_actual as click,c.avatar,e.org_name as company_name";
         $obj = new ProjectTasks();
 
-
-
         $query = $obj->alias('a')
             ->join('admin c', 'c.id = a.creator', 'left')
             ->join('enterprise_verification e', 'e.user_id = a.creator', 'left')

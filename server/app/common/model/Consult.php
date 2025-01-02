@@ -15,43 +15,20 @@
 namespace app\common\model;
 
 
-use app\common\model\auth\Admin;
 use app\common\model\BaseModel;
-use app\common\service\FileService;
 use think\model\concern\SoftDelete;
 
 
 /**
- * 项目模型
- * Class ProjectTasks
+ * Consult模型
+ * Class Consult
  * @package app\common\model
  */
-class ProjectTasks extends BaseModel
+class Consult extends BaseModel
 {
     use SoftDelete;
-    protected $name = 'project_tasks';
+    protected $name = 'consult';
     protected $deleteTime = 'delete_time';
 
-
-    /**
-     * @notes 头像获取器 - 头像路径添加域名
-     * @param $value
-     * @return string
-     * @author Tab
-     * @date 2021/7/13 11:35
-     */
-    public function getCooperativeContractAttr($value)
-    {
-        return empty($value) ? "" : FileService::getFileUrl(trim($value, '/'));
-    }
-
-    function creator()
-    {
-        return $this->belongsTo(Admin::class, 'creator', 'id');
-    }
-
-    function enterpriseVerification()
-    {
-        return $this->belongsTo(EnterpriseVerification::class, 'creator', 'user_id');
-    }
+    
 }

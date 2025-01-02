@@ -55,7 +55,7 @@ class ProjectTasksLists extends BaseAdminDataLists implements ListsSearchInterfa
     {
         $where = [];
 
-        if (!in_array($this->adminId, $this->adminIds)) {
+        if (in_array(1, $this->adminInfo['role_id'])) {
             $where[] = ['la_project_tasks.creator', '=', $this->adminId];
         }
         if (!empty($this->params['project_name'])) {

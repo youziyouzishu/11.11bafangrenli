@@ -69,6 +69,7 @@ class JsonService
      */
     public static function data($data): Json
     {
+
         return self::success('', $data, 1, 0);
     }
 

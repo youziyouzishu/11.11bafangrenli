@@ -32,6 +32,7 @@ class User extends BaseModel
 
     protected $deleteTime = 'delete_time';
 
+    public $append = ['role_text'];
 
     /**
      * @notes 关联用户授权模型
@@ -119,6 +120,22 @@ class User extends BaseModel
     public function getAvatarAttr($value)
     {
         return trim($value) ? FileService::getFileUrl($value) : '';
+    }
+
+    function getRoleTextAttr($value)
+    {
+        $value = $value ?: ($this->role ?? '');
+        $list = $this->getRoleList();
+        return $list[$value] ?? '';
+    }
+
+    public function getRoleList()
+    {
+        return [
+            2 => '招聘顾问',
+            3 => '驻场经理',
+            4 => '求职者'
+        ];
     }
 
 

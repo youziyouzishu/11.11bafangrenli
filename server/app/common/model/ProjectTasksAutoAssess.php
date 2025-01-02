@@ -16,22 +16,33 @@ namespace app\common\model;
 
 
 use app\common\model\auth\Admin;
-use app\common\model\BaseModel;
-
+use app\common\model\user\User;
 
 
 /**
- * EnterpriseVerification模型
- * Class EnterpriseVerification
+ * AdminConsultLog模型
+ * Class AdminConsultLog
  * @package app\common\model
  */
-class EnterpriseVerification extends BaseModel
+class ProjectTasksAutoAssess extends BaseModel
 {
+    
+    protected $name = 'project_tasks_auto_assess';
 
-    protected $name = 'enterprise_verification';
+
+    function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
     function admin()
     {
-        return $this->belongsTo(Admin::class, 'user_id', 'id');
+        return $this->belongsTo(Admin::class, 'admin_id', 'id');
     }
+
+    function projectAuto()
+    {
+        return $this->belongsTo(ProjectTasksAudit::class, 'project_tasks_audit_id', 'id');
+    }
+    
 }

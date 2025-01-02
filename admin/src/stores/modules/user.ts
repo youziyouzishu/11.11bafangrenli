@@ -30,10 +30,16 @@ const useUserStore = defineStore({
 	getters: {},
 	actions: {
 		getSignStatus() {
-			return (
-				this.userInfo.enterpriseVerification != null &&
-				this.userInfo.enterpriseVerification?.realname_status
-			);
+
+			if (this.userInfo.role_id.includes(1)) {
+				return (
+					this.userInfo.enterpriseVerification != null &&
+					this.userInfo.enterpriseVerification?.realname_status
+				);
+			}else{
+				return 6;
+			}
+
 		},
 		resetState() {
 			this.token = "";

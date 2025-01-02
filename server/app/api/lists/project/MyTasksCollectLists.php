@@ -56,7 +56,8 @@ class MyTasksCollectLists extends BaseApiDataLists
      */
     public function lists(): array
     {
-        $field = "a.*,a.click_virtual+a.click_actual as click,c.avatar,e.org_name as company_name,d.id as project_audit_id,d.status as audit_status,f.status as contract_status";
+        $field = "a.*,a.click_virtual+a.click_actual as click,c.avatar,e.org_name as company_name,
+        d.id as project_audit_id,d.status as audit_status,f.status as contract_status";
         $obj = new ProjectTasks();
 
         // 子查询示例

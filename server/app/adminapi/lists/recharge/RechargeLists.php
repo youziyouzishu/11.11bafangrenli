@@ -143,11 +143,22 @@ class RechargeLists extends BaseAdminDataLists implements ListsSearchInterface, 
      */
     public function count(): int
     {
-        return RechargeOrder::alias('ro')
-            ->leftJoin('user u', 'u.id = ro.user_id AND ro.type="PSN"')
-            ->leftJoin('admin org', 'org.id = ro.user_id AND ro.type="ORG"')
+        $field = 'ro.id, ro.sn, ro.order_amount, ro.pay_way, ro.pay_time, ro.pay_status, ro.create_time, ro.refund_status';
+        $field .= ', IF(ro.type="PSN", u.psn_name, org.org_name) as nickname,ro.type';
+
+        // 使用 LEFT JOIN 并带条件
+        $query = RechargeOrder::alias('ro')
+            ->leftJoin('personal_verification u', 'u.user_id = ro.user_id AND ro.type="PSN"')
+            ->leftJoin('la_enterprise_verification org', 'org.user_id = ro.user_id AND ro.type="ORG"')
+            ->field($field)
             ->where($this->queryWhere())
             ->where($this->searchWhere)
-            ->count();
+            ->order('ro.id', 'desc')
+            ->limit($this->limitOffset, $this->limitLength);
+
+        // 输出生成的 SQL 查询
+        //echo $query->buildSql();
+
+        return $query->count();
     }
 }

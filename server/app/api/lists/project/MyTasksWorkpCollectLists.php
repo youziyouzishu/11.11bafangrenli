@@ -45,7 +45,6 @@ class MyTasksWorkpCollectLists extends BaseApiDataLists
         if ($this->userInfo['role'] == 3) {
             $where[] = ["a.onsite_user_id", "=", $this->userId];
         }
-        // 用户月明细
         if (!empty($this->params['project_id'])) {
             $where[] = ['a.project_id', '=', $this->params['project_id']];
         }

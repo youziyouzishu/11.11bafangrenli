@@ -50,17 +50,18 @@ class UserLogic extends BaseLogic
      */
     public static function center(array $userInfo): array
     {
-        $user = User::where(['id' => $userInfo['user_id']])
-            ->field('id,sn,sex,account,role,nickname,real_name,avatar,mobile,create_time,is_new_user,user_money,password,direction,bank_name,bank_account,profile,city,city_address,history,flow_status')
-            ->findOrEmpty();
-
+        $user = User::where(['id' => $userInfo['user_id']])->findOrEmpty();
         $user['realname_status'] = PersonalVerification::where(['user_id' => $userInfo['user_id']])->value('realname_status');
         $user['id_card'] = PersonalVerification::where(['user_id' => $userInfo['user_id']])->value('psn_id_card_num');
         if (in_array($userInfo['terminal'], [UserTerminalEnum::WECHAT_MMP, UserTerminalEnum::WECHAT_OA])) {
             $auth = UserAuth::where(['user_id' => $userInfo['user_id'], 'terminal' => $userInfo['terminal']])->find();
             $user['is_auth'] = $auth ? YesNoEnum::YES : YesNoEnum::NO;
         }
-        $user['rolename'] =  RoleEnum::getDisableDesc($user['role']);
+        if ($user['role']){
+            $user['rolename'] =  RoleEnum::getDisableDesc($user['role']);
+        }else{
+            $user['rolename'] = '未选择身份';
+        }
         $user['tabbar'] = DecorateTabbar::getTabbarLists($user['role']);
         $user['has_password'] = !empty($user['password']);
         $user->hidden(['password']);
