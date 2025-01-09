@@ -71,6 +71,10 @@ class EnterpriseVerificationLists extends BaseAdminDataLists implements ListsSea
      */
     public function count(): int
     {
-        return EnterpriseVerification::where($this->searchWhere)->count();
+        return EnterpriseVerification::where($this->searchWhere)
+            ->field(['id', 'user_id', 'org_id', 'org_name', 'org_type', 'org_id_card_num', 'org_id_card_type', 'legal_rep_name', 'legal_rep_id_card_num', 'legal_rep_id_card_type', 'admin_name', 'admin_account', 'authorize_user_info', 'realname_status'])
+            ->limit($this->limitOffset, $this->limitLength)
+            ->order(['id' => 'desc'])
+            ->count();
     }
 }

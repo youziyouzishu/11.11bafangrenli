@@ -17,6 +17,7 @@ namespace app\adminapi\controller;
 use app\adminapi\logic\auth\AuthLogic;
 use app\adminapi\logic\ConfigLogic;
 use app\api\logic\IndexLogic;
+use app\common\service\ConfigService;
 
 /**
  * 配置控制器
@@ -38,6 +39,19 @@ class ConfigController extends BaseAdminController
     {
         $data = ConfigLogic::getConfig();
         return $this->data($data);
+    }
+
+    function getConfigs()
+    {
+        $data = ConfigService::get('configs','configs');
+        return $this->data($data);
+    }
+
+    public function setConfigs()
+    {
+        $value = $this->request->post('value');# 获取前端传过来的值
+        ConfigService::set('configs','configs',$value);
+        return $this->success();
     }
 
 

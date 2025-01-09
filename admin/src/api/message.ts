@@ -15,6 +15,11 @@ export function setNoticeConfig(params: any) {
     return request.post({ url: '/notice.notice/set', params })
 }
 
+// 获取通知
+export function getNotice(params: any) {
+    return request.post({ url: '/notice.notice/getProjectCount', params })
+}
+
 // 短信设置列表
 export function smsLists() {
     return request.get({ url: '/notice.sms_config/getConfig' })

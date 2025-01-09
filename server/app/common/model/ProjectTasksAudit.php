@@ -38,7 +38,7 @@ class ProjectTasksAudit extends BaseModel
      */
     public function projectinfo()
     {
-        return $this->belongsTo(\app\common\model\task\ProjectTasks::class, 'project_id')->field('id,project_name');
+        return $this->belongsTo(ProjectTasks::class, 'project_id');
     }
 
 
@@ -52,6 +52,17 @@ class ProjectTasksAudit extends BaseModel
     {
         return $this->hasOne(PersonalVerification::class, 'user_id', 'user_id');
     }
+
+    public function projectTasks()
+    {
+        return $this->belongsTo(ProjectTasks::class, 'project_id');
+    }
+
+    function enterpriseVerification()
+    {
+        return $this->belongsTo(EnterpriseVerification::class, 'creator', 'user_id');
+    }
+
 
     /**
      * @notes contractinfo

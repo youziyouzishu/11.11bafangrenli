@@ -34,14 +34,14 @@ class BaseLikeAdminController extends BaseController
     /**
      * @notes 操作成功
      * @param string $msg
-     * @param array $data
+     * @param mixed $data
      * @param int $code
      * @param int $show
      * @return \think\response\Json
      * @author 张晓科
      * @date 2021/12/27 14:21
      */
-    protected function success(string $msg = 'success', array $data = [], int $code = 1, int $show = 0)
+    protected function success(string $msg = 'success', mixed $data = [], int $code = 1, int $show = 0)
     {
 
         return JsonService::success($msg, $data, $code, $show);

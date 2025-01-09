@@ -19,8 +19,11 @@ namespace app\adminapi\controller;
 use app\adminapi\controller\BaseAdminController;
 use app\adminapi\lists\MemberAllLists;
 use app\common\model\auth\Admin;
+use app\common\model\ProjectTasksAudit;
 use app\common\model\user\User;
 use app\common\http\esign\Config;
+use app\Request;
+use think\db\Query;
 
 /**
  * ProjectTasksAudit控制器
@@ -40,6 +43,24 @@ class MembersController extends BaseAdminController
         return $this->dataLists(new MemberAllLists());
     }
 
+    function getProjectAuditListByUser(Request $request)
+    {
+        $param = $request->param();
+        $user = User::with(['personalVerification'=>function (Query $query) {
+            $query->where('realname_status',4);
+        }])->find($param['user_id']);
+        if ($user->isEmpty()){
+            return $this->fail('用户不存在');
+        }
+        $rows = ProjectTasksAudit::where(['user_id'=>$param['user_id']])
+            ->with(['projectTasks','enterpriseVerification'])
+
+            ->where(['status'=>2])
+            ->select();
+
+        return $this->data(['user'=>$user,'list'=>$rows]);
+    }
+
     /**
      * @notes 获取列表
      * @return \think\response\Json
@@ -51,7 +72,9 @@ class MembersController extends BaseAdminController
         $tmp = request()->post();
         $id = intval($tmp['id']);
         $user = User::findOrEmpty($id);
-
+        if ($user->isEmpty()){
+            return $this->fail('用户不存在');
+        }
         // 获取管理员记录
         $admin = Admin::findOrEmpty($this->adminId); // 假设是ID为1的管理员
 
@@ -70,8 +93,10 @@ class MembersController extends BaseAdminController
                     $admin->save();
                 }
             }
+
             $admin->consultLog()->save(['user_id' => $user->id]);
         }
+
         $protocol = request()->scheme();
         $host = $_SERVER['HTTP_HOST'];
         $url = $protocol . '://' . $host . '/business/im?conversationId=C2Ccl_' . $user['sn'];

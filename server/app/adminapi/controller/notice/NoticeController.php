@@ -18,6 +18,8 @@ use app\adminapi\controller\BaseAdminController;
 use app\adminapi\lists\notice\NoticeSettingLists;
 use app\adminapi\logic\notice\NoticeLogic;
 use app\adminapi\validate\notice\NoticeValidate;
+use app\common\model\ProjectTasks;
+use app\common\model\ProjectTasksAudit;
 
 /**
  * 通知控制器
@@ -66,5 +68,15 @@ class NoticeController extends BaseAdminController
             return $this->success('设置成功');
         }
         return $this->fail(NoticeLogic::getError());
+    }
+
+    function getProjectCount()
+    {
+        $rows = ProjectTasksAudit::where('status', 0)
+            ->when(in_array(1,$this->adminInfo['role_id']),function ($query){
+                $query->where('creator',$this->adminId);
+            })
+            ->count();
+        return $this->data($rows);
     }
 }

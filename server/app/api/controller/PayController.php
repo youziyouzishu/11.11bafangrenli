@@ -16,12 +16,20 @@ namespace app\api\controller;
 
 
 use app\api\validate\PayValidate;
+use app\common\enum\PayEnum;
+use app\common\enum\user\AccountLogEnum;
 use app\common\enum\user\UserTerminalEnum;
+use app\common\logic\AccountLogLogic;
 use app\common\logic\PaymentLogic;
+use app\common\model\auth\Admin;
+use app\common\model\recharge\RechargeOrder;
+use app\common\model\user\User;
 use app\common\service\pay\AliPayService;
-use app\common\service\pay\EpayService;
 use app\common\service\pay\WeChatPayService;
-use think\facade\Log;
+use app\Request;
+use EasyWeChat\MiniApp\Application;
+use think\facade\Db;
+use Yansongda\Pay\Pay;
 
 /**
  * 支付
@@ -31,7 +39,7 @@ use think\facade\Log;
 class PayController extends BaseApiController
 {
 
-    public array $notNeedLogin = ['notifyMnp', 'notifyOa', 'aliNotify', 'notifyApp', 'notifyEpay'];
+    public array $notNeedLogin = ['notifyMnp', 'notifyOa', 'aliNotify', 'notifyApp', 'notifyEpay','alipay', 'wechat', 'balance'];
 
 
     /**
@@ -164,4 +172,126 @@ class PayController extends BaseApiController
     {
         return (new WeChatPayService(UserTerminalEnum::IOS))->notify();
     }
+
+
+    function alipay(Request $request)
+    {
+        $request->paytype = 'alipay';
+        try {
+            $this->pay($request);
+        } catch (\Throwable $e) {
+            return $this->fail($e->getMessage());
+        }
+        return response('success');
+    }
+
+    function wechat(Request $request)
+    {
+        $request->paytype = 'wechat';
+        try {
+            $this->pay($request);
+        } catch (\Throwable $e) {
+            return json(['code' => 'FAIL', 'message' => $e->getMessage()]);
+        }
+        return json(['code' => 'SUCCESS', 'message' => '成功']);
+    }
+
+    function balance(Request $request)
+    {
+        $request->paytype = 'balance';
+        try {
+            $this->pay($request);
+        } catch (\Throwable $e) {
+            return $this->fail($e->getMessage());
+        }
+        return $this->success();
+    }
+
+    /**
+     * 接受回调
+     * @throws \Throwable
+     */
+    private function pay(Request $request)
+    {
+        Db::startTrans();
+        try {
+            $paytype = $request->paytype;
+            $config = config('payment');
+            switch ($paytype) {
+                case 'wechat':
+                    $pay = Pay::wechat($config);
+                    $res = $pay->callback();
+                    $res = $res->resource;
+                    $res = $res['ciphertext'];
+                    $out_trade_no = $res['out_trade_no'];
+                    $attach = $res['attach'];
+                    $mchid = $res['mchid'];
+                    $transaction_id = $res['transaction_id'];
+                    $openid = $res['payer']['openid'] ?? '';
+                    break;
+                case 'alipay':
+                    $pay = Pay::alipay($config);
+                    $res = $pay->callback();
+                    $out_trade_no = $res->out_trade_no;
+                    $attach = $res->passback_params;
+                    $transaction_id = $res->trade_no;
+                    break;
+                case 'balance':
+                    $out_trade_no = $request->param('out_trade_no');
+                    $attach = $request->param('attach');
+                    break;
+                default:
+                    throw new \Exception('支付类型错误');
+            }
+
+            switch ($attach) {
+                case 'business_recharge':
+                    $order = RechargeOrder::where(['sn' => $out_trade_no, 'pay_status' => 0])->find();
+                    if (!$order) {
+                        throw new \Exception('订单不存在');
+                    }
+                    #增加余额
+                    // 增加用户累计充值金额及用户余额
+                    $user = Admin::findOrEmpty($order->user_id);
+                    $user->total_recharge_amount += $order->order_amount;
+                    $user->user_money += $order->order_amount;
+                    $user->save();
+
+                    // 记录账户流水
+                    AccountLogLogic::add(
+                        $order->user_id,
+                        AccountLogEnum::UM_INC_RECHARGE,
+                        AccountLogEnum::INC,
+                        $order->order_amount,
+                        $order->sn,
+                        '人力公司充值'
+                    );
+
+                    // 更新充值订单状态
+                    $order->transaction_id = $transaction_id;
+                    $order->pay_status = PayEnum::ISPAID;
+                    $order->pay_time = time();
+                    $order->save();
+                    break;
+                case 'shop':
+                    $order = Shop::where(['ordersn' => $out_trade_no, 'status' => 1])->first();
+                    if (!$order) {
+                        throw new \Exception('订单不存在');
+                    }
+                    $order->status = 2;
+                    $order->pay_time = date('Y-m-d H:i:s');
+                    $order->save();
+                    break;
+                default:
+                    throw new \Exception('回调错误');
+            }
+            Db::commit();
+        } catch (\Throwable $e) {
+            Db::rollback();
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+
+
 }

@@ -17,14 +17,11 @@ namespace app\common\model\auth;
 use app\common\enum\YesNoEnum;
 use app\common\model\AdminConsultLog;
 use app\common\model\BaseModel;
-use app\common\model\dept\Dept;
 use app\common\model\EnterpriseVerification;
 use app\common\model\ProjectTasks;
 use app\common\model\ProjectTasksAudit;
-use app\common\model\user\User;
-use think\model\concern\SoftDelete;
 use app\common\service\FileService;
-use \think\Model;
+use think\model\concern\SoftDelete;
 
 
 class Admin extends BaseModel
@@ -42,10 +39,6 @@ class Admin extends BaseModel
     // 确保引用了 think\Model
 
 
-    public function enterpriseVerification()
-    {
-        return $this->hasOne(EnterpriseVerification::class, 'user_id', 'id');
-    }
 
     /**
      * @notes 关联角色id
@@ -208,6 +201,12 @@ class Admin extends BaseModel
     {
         return $this->hasMany(AdminConsultLog::class, 'admin_id', 'id');
     }
+
+    function enterpriseVerification()
+    {
+        return $this->hasOne(EnterpriseVerification::class, 'user_id', 'id');
+    }
+
 
 
 

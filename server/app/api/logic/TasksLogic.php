@@ -156,7 +156,6 @@ class TasksLogic extends BaseLogic
     {
         Db::startTrans();
         try {
-
             $project = ProjectTasks::where(['id' =>  $params['project_id']])->find();
             $audit = ProjectTasksAudit::where(['user_id' => $params['user_id']])->where(['project_id' =>  $params['project_id']])->find();
             if ($audit) {

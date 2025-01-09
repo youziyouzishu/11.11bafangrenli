@@ -35,7 +35,10 @@
     "alipaysdk/easysdk": "^2.2",
     "w7corp/easywechat": "^6.8",
     "tencentcloud/sms": "^3.0",
-    "endroid/qr-code": "^6.0"
+    "endroid/qr-code": "^6.0",
+    "guzzlehttp/guzzle": "^7.9",
+    "yansongda/pay": "^3.7",
+    "hyperf/pimple": "^2.2"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.2",

@@ -15,8 +15,18 @@ namespace app\adminapi\controller;
 
 use app\api\lists\recharge\RechargeLists;
 use app\api\logic\RechargeLogic;
+use app\api\service\PayService;
 use app\api\validate\RechargeValidate;
 use app\adminapi\controller\BaseAdminController;
+use app\common\enum\PayEnum;
+use app\common\model\recharge\RechargeOrder;
+use app\Request;
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
 
 /**
  * 充值控制器
@@ -58,6 +68,48 @@ class RechargeController extends BaseAdminController
         }
         return $this->data($result);
     }
+
+
+    function payRecharge(Request $request)
+    {
+        $amount = $request->param('amount');
+        $pay_way = $request->param('pay_way');#支付方式:1=云闪付,2=微信,3=支付宝
+        $ordersn = generate_sn(RechargeOrder::class, 'sn');
+
+        try {
+            $data = [
+                'sn' => $ordersn,
+                'user_id' => $this->adminId,
+                'order_amount' => $amount,
+                'type' => 'ORG',
+            ];
+            RechargeOrder::create($data);
+            $result = PayService::pay($pay_way, $amount,$ordersn,'余额充值','business_recharge','pc');
+
+            // 使用构建器创建 QR Code
+            $writer = new PngWriter();
+            $qrCode = new QrCode(
+                data: $result->code_url,
+                encoding: new Encoding('UTF-8'),
+                errorCorrectionLevel: ErrorCorrectionLevel::Low,
+                size: 100,
+                margin: 10,
+                roundBlockSizeMode: RoundBlockSizeMode::Margin,
+                foregroundColor: new Color(0, 0, 0),
+                backgroundColor: new Color(255, 255, 255)
+            );
+            $result = $writer->write($qrCode)->getDataUri();
+
+        }catch (\Throwable $e){
+            return $this->fail($e->getMessage());
+        }
+        return  $this->data(['base64'=>$result]);
+    }
+
+
+
+
+
 
 
     /**

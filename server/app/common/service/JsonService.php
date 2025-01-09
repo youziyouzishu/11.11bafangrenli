@@ -31,14 +31,14 @@ class JsonService
     /**
      * @notes 接口操作成功，返回信息
      * @param string $msg
-     * @param array $data
+     * @param mixed $data
      * @param int $code
      * @param int $show
      * @return Json
      * @author 张晓科
      * @date 2021/12/24 18:28
      */
-    public static function success(string $msg = 'success', array $data = [], int $code = 1, int $show = 1): Json
+    public static function success(string $msg = 'success', mixed $data = [], int $code = 1, int $show = 1): Json
     {
         return self::result($code, $show, $msg, $data);
     }
@@ -79,13 +79,13 @@ class JsonService
      * @param int $code
      * @param int $show
      * @param string $msg
-     * @param array $data
+     * @param mixed $data
      * @param int $httpStatus
      * @return Json
      * @author 张晓科
      * @date 2021/12/24 18:29
      */
-    private static function result(int $code, int $show, string $msg = 'OK', array $data = [], int $httpStatus = 200): Json
+    private static function result(int $code, int $show, string $msg = 'OK', mixed $data = [], int $httpStatus = 200): Json
     {
         $ifNoneMatch = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? $_SERVER['HTTP_IF_NONE_MATCH'] : '';
 

@@ -53,6 +53,7 @@ class UserLogic extends BaseLogic
         $user = User::where(['id' => $userInfo['user_id']])->findOrEmpty();
         $user['realname_status'] = PersonalVerification::where(['user_id' => $userInfo['user_id']])->value('realname_status');
         $user['id_card'] = PersonalVerification::where(['user_id' => $userInfo['user_id']])->value('psn_id_card_num');
+        $user['psn_name'] = PersonalVerification::where(['user_id' => $userInfo['user_id']])->value('psn_name');
         if (in_array($userInfo['terminal'], [UserTerminalEnum::WECHAT_MMP, UserTerminalEnum::WECHAT_OA])) {
             $auth = UserAuth::where(['user_id' => $userInfo['user_id'], 'terminal' => $userInfo['terminal']])->find();
             $user['is_auth'] = $auth ? YesNoEnum::YES : YesNoEnum::NO;

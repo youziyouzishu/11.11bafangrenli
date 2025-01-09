@@ -156,7 +156,7 @@ class UserController extends BaseApiController
     public function bindRole()
     {
         $params = (new UserValidate())->post()->goCheck('bindRole');
-        if ($params['role'] == NULL) {
+        if (empty($params['role'])) {
             return $this->fail("请先选择身份");
         }
 

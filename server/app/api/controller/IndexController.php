@@ -17,6 +17,7 @@ namespace app\api\controller;
 
 use app\api\logic\IndexLogic;
 use app\adminapi\logic\ConfigLogic;
+use app\api\service\PayService;
 use think\response\Json;
 use app\common\model\user\User;
 use app\common\cache\UserTokenCache;

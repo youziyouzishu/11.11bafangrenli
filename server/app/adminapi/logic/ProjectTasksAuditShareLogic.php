@@ -165,6 +165,7 @@ class ProjectTasksAuditShareLogic extends BaseLogic
         on b.user_id = d.user_id   
         ";
         $result = Db::query($sSql, ["unikey" => $params['unikey']]);
+
         if ($result && isset($params['enter']) && $params['enter'] == 1) {
 
             //同意逻辑

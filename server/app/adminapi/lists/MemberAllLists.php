@@ -19,6 +19,7 @@ use app\adminapi\lists\BaseAdminDataLists;
 use app\common\model\ProjectTasksAudit;
 use app\common\lists\ListsSearchInterface;
 use app\common\model\user\User;
+use app\Request;
 
 /**
  * ProjectTasksAudit列表
@@ -81,12 +82,13 @@ class MemberAllLists extends BaseAdminDataLists implements ListsSearchInterface
         //     ->buildSql());
         // exit;
         return User::alias('l')->where($this->queryWhere())
-            ->field(['l.id', 'l.avatar', 'b.psn_name', 'b.psn_mobile', 'l.profile', 'l.role'])
+            ->field('l.*,b.psn_name,b.psn_mobile')
             ->leftjoin('la_personal_verification b', 'b.user_id=l.id')
             ->limit($this->limitOffset, $this->limitLength)
             ->select()
             ->toArray();
     }
+
 
 
     /**
@@ -98,7 +100,7 @@ class MemberAllLists extends BaseAdminDataLists implements ListsSearchInterface
     public function count(): int
     {
         return User::alias('l')->where($this->queryWhere())
-            ->field(['l.id', 'l.avatar', 'b.psn_name', 'b.psn_mobile'])
-            ->leftjoin('la_personal_verification b', 'b.user_id=l.id')->count();
+            ->leftjoin('la_personal_verification b', 'b.user_id=l.id')
+            ->count();
     }
 }

@@ -18,6 +18,7 @@ namespace app\common\model\user;
 
 use app\common\enum\user\UserEnum;
 use app\common\model\BaseModel;
+use app\common\model\PersonalVerification;
 use app\common\service\FileService;
 use think\model\concern\SoftDelete;
 
@@ -223,4 +224,11 @@ class User extends BaseModel
     {
         return empty($value) ? "" : FileService::getFileUrl(trim($value, '/'));
     }
+
+    function personalVerification()
+    {
+        return $this->hasOne(PersonalVerification::class,'user_id','id');
+    }
+
+    
 }
