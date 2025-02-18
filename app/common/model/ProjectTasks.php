@@ -50,6 +50,11 @@ class ProjectTasks extends BaseModel
         return $this->belongsTo(Admin::class, 'creator', 'id');
     }
 
+    function admin()
+    {
+        return $this->belongsTo(Admin::class, 'creator', 'id');
+    }
+
     function enterpriseVerification()
     {
         return $this->belongsTo(EnterpriseVerification::class, 'creator', 'user_id');

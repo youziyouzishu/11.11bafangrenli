@@ -175,17 +175,17 @@ class BusinessController extends BaseApiController
         if ($user->role != 3) {
             return $this->fail('无权限');
         }
-        $daogang_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id, 'type' => 2])->count();
+        $daogang_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id,'type'=>4, 'work_status' => 2])->count();
         $jiesuan_amount = $daogang_num * 1000;
         $report->user_id = $this->userId;
         $report->daogang_num = $daogang_num;
         $report->jiesuan_amount = $jiesuan_amount;
-        $report->daidaogang_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id, 'type' => 1])->count();
-        $report->liushi_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id, 'type' => 3])->count();
-        $report->lizhi_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id, 'type' => 4])->count();
-        $report->mianshi_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id, 'type' => 5])->count();
-        $report->ruzhi_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id, 'type' => 6])->count();
-        $report->company_amount = $report->projectTasks->creator->book_amount - $jiesuan_amount;
+        $report->daidaogang_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id,'type'=>4, 'work_status' => 1])->count();
+        $report->liushi_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id,'type'=>4, 'work_status' => 3])->count();
+        $report->lizhi_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id,'type'=>4, 'work_status' => 4])->count();
+        $report->mianshi_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id,'type'=>4, 'work_status' => 5])->count();
+        $report->ruzhi_num = ProjectTasksAudit::where(['project_id' => $project_tasks_id,'type'=>4, 'work_status' => 6])->count();
+        $report->company_amount = $report->projectTasks->admin->book_amount - $jiesuan_amount;
         $report->jiesuan_amount = $jiesuan_amount;
         $report->status = 1;
         $report->save();
@@ -230,6 +230,7 @@ class BusinessController extends BaseApiController
             if (!$report) {
                 //创建日报
                 ProjectReport::create([
+                    'admin_id' => $row->creator,
                     'project_tasks_id' => $row->id,
                     'date' => date('Y-m-d'),
                     'mianshi_num' => 0,
@@ -373,16 +374,24 @@ class BusinessController extends BaseApiController
         $status = $request->param('status');# 1=拒绝 2=同意
         $bank = $request->param('bank');
         $bank_card = $request->param('bank_card');
+        $ali_account = $request->param('ali_account');
         $row = ProjectTasksAuditSettle::find($settle_id);
         if ($row->status != 0){
             return $this->fail('状态异常');
         }
-        $row->status = $status;
+        if ($status == 1 ){
+            $row->status = 3;
+        }else{
+            $row->status = 2;
+        }
         if(!empty($bank)){
             $row->bank = $bank;
         }
         if(!empty($bank_card)){
             $row->bank_card = $bank_card;
+        }
+        if(!empty($ali_account)){
+            $row->ali_account = $ali_account;
         }
         $row->save();
         return $this->success('成功');

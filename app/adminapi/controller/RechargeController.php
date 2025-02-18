@@ -89,6 +89,7 @@ class RechargeController extends BaseAdminController
                 'pay_way' => $pay_way,
             ];
             RechargeOrder::create($data);
+
             $result = PayService::pay($pay_way, $amount,$ordersn,'余额充值','business_recharge','pc');
 
             // 使用构建器创建 QR Code

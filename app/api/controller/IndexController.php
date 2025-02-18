@@ -22,6 +22,9 @@ use app\adminapi\service\FundTransPagePay;
 use app\api\logic\IndexLogic;
 use app\adminapi\logic\ConfigLogic;
 use app\api\service\PayService;
+use app\common\model\ProjectReport;
+use app\common\model\ProjectTasks;
+use app\common\model\ProjectTasksAudit;
 use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Random;
 use think\response\Json;
 use app\common\model\user\User;
@@ -42,7 +45,7 @@ class IndexController extends BaseApiController
 {
 
 
-    public array $notNeedLogin = ['index', 'config', 'policy', 'decorate', 'dict', 'log','test','aaa','create','pay','query'];
+    public array $notNeedLogin = ['index', 'config', 'policy', 'decorate', 'dict', 'log','test','aaa','create','pay','query','ccccc'];
 
 
     function query()
@@ -130,24 +133,26 @@ class IndexController extends BaseApiController
         return redirect($url);
 
     }
-    function test()
+    function ccccc()
     {
 
-        Pay::config(config('payment'));
-        $params = array();
-        // 设置个人签约产品码
-        $params['personal_product_code'] = 'FUND_SAFT_SIGN_WITHHOLDING_P';
-        $params['sign_scene'] = 'INDUSTRY|SATF_ACC';
-        $params['access_params'] = ['channel'=>'QRCODE'];
-        $params['product_code'] = 'FUND_SAFT_SIGN_WITHHOLDING';
-        $params['external_agreement_no'] = 1;
-        $params['third_party_type'] = 'PARTNER';
-        $params['_method'] = 'GET';
-        $allPlugins = Pay::alipay()->mergeCommonPlugins([SignPlugin::class, ResponseHtmlPlugin::class]);
-        $result = Pay::alipay()->pay($allPlugins, $params);
-        $url = $result->getHeader('Location')[0];
 
-        return redirect($url);
+//
+//        Pay::config(config('payment'));
+//        $params = array();
+//        // 设置个人签约产品码
+//        $params['personal_product_code'] = 'FUND_SAFT_SIGN_WITHHOLDING_P';
+//        $params['sign_scene'] = 'INDUSTRY|SATF_ACC';
+//        $params['access_params'] = ['channel'=>'QRCODE'];
+//        $params['product_code'] = 'FUND_SAFT_SIGN_WITHHOLDING';
+//        $params['external_agreement_no'] = 1;
+//        $params['third_party_type'] = 'PARTNER';
+//        $params['_method'] = 'GET';
+//        $allPlugins = Pay::alipay()->mergeCommonPlugins([SignPlugin::class, ResponseHtmlPlugin::class]);
+//        $result = Pay::alipay()->pay($allPlugins, $params);
+//        $url = $result->getHeader('Location')[0];
+//
+//        return redirect($url);
     }
 
     /**

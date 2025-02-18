@@ -17,6 +17,7 @@ namespace app\api\lists\project;
 use app\api\lists\BaseApiDataLists;
 use app\common\enum\YesNoEnum;
 use app\common\model\ProjectTasks;
+use app\common\model\ProjectTasksAudit;
 use app\common\service\FileService;
 use think\DbManager;
 
@@ -55,9 +56,8 @@ class TasksCollectLists extends BaseApiDataLists
      */
     public function lists(): array
     {
-        $field = "a.*,a.click_virtual+a.click_actual as click,c.avatar,e.org_name as company_name";
+        $field = "a.*,a.click_virtual+a.click_actual as click,c.avatar,e.org_name as company_name,c.book_amount";
         $obj = new ProjectTasks();
-
         $query = $obj->alias('a')
             ->join('admin c', 'c.id = a.creator', 'left')
             ->join('enterprise_verification e', 'e.user_id = a.creator', 'left')
@@ -77,6 +77,10 @@ class TasksCollectLists extends BaseApiDataLists
         foreach ($lists as &$item) {
             if (!empty($item['avatar'])) {
                 $item['avatar'] = FileService::getFileUrl($item['avatar']);
+            }
+
+            if (!empty($item['book_amount'])) {
+                $item['book_amount'] = $item['book_amount'] - ProjectTasksAudit::where(['creator' => $item['creator'], 'work_status' => 2])->count() * 1000;
             }
         }
 

@@ -21,10 +21,8 @@ use app\api\lists\project\MyTasksCollectLists;
 use app\api\lists\project\MyTasksWorkpCollectLists;
 use app\api\logic\TasksLogic;
 use app\adminapi\logic\ProjectTasksAuditLogic;
-use app\adminapi\logic\ProjectTasksLogic;
 use app\adminapi\validate\ProjectDailyReportValidate;
 use app\adminapi\validate\ProjectTasksAuditValidate;
-use app\common\model\ProjectDailyReport;
 
 /**
  * 文章管理

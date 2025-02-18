@@ -120,11 +120,6 @@ class ProjectTasksAuditLogic extends BaseLogic
     {
         Db::startTrans();
         try {
-            $userInfo = Admin::where('id', $params['user_id'])->find();
-            if ($userInfo->user_money < 100) {
-                throw new Exception("余额不足100元，请充值后在发起签署合同流程");
-            }
-
             if ($params['status'] == 3) {
                 $bool = ProjectTasksAudit::update([
                     'status' => $params['status'],

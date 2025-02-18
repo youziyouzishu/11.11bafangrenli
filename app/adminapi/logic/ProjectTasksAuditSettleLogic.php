@@ -15,10 +15,15 @@
 namespace app\adminapi\logic;
 
 
+use app\adminapi\service\FundTransUniTransfer;
+use app\common\model\auth\Admin;
 use app\common\model\ProjectTasksAudit;
 use app\common\model\ProjectTasksAuditSettle;
 use app\common\logic\BaseLogic;
 use think\facade\Db;
+use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Sign\SignPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\ResponseHtmlPlugin;
 
 
 /**
@@ -72,15 +77,36 @@ class ProjectTasksAuditSettleLogic extends BaseLogic
     {
         Db::startTrans();
         try {
-            ProjectTasksAuditSettle::where('id', $params['id'])->update([
-                'name' => $params['name'],
-                'amount' => $params['amount'],
-                'num' => $params['num'],
-                'bank' => $params['bank'],
-                'bank_card' => $params['bank_card'],
-                'status' => $params['status']
-            ]);
 
+
+            $row = ProjectTasksAuditSettle::where('id', $params['id'])->find();
+            if ($row['status'] == 2 && $params['status'] == 4) {
+               //进行打款
+                $admin = Admin::where('id',$row->admin_id)->find();
+                Pay::config(config('payment'));
+                // 设置个人签约产品码
+                $ordersn = date('Ymd') . mb_strtoupper(uniqid());
+                $param['out_biz_no'] = $ordersn;
+                $param['trans_amount'] = $params['amount'];
+                $param['product_code'] = 'SINGLE_TRANSFER_NO_PWD';
+                $param['biz_scene'] = 'ENTRUST_TRANSFER';
+                $param['payer_info'] = ['identity_type'=>'ACCOUNT_BOOK_ID','identity'=>$admin->account_book_id,'ext_info'=>json_encode(['agreement_no'=>$admin->agreement_no])];
+                $param['order_title'] = '结算代发';
+                $param['payee_info'] = ['identity_type'=>'ALIPAY_LOGON_ID','identity'=>$row['ali_account']];
+                $allPlugins = Pay::alipay()->mergeCommonPlugins([FundTransUniTransfer::class]);
+                $result = Pay::alipay()->pay($allPlugins, $param);
+                $result = $result->get();
+                if ($result['code'] == '10000'){
+                    $row->name = $params['name'];
+                    $row->amount = $params['amount'];
+                    $row->num = $params['num'];
+                    $row->ali_account = $params['ali_account'];
+                    $row->status = $params['status'];
+                    $row->save();
+                }else {
+                    throw new \Exception($result['msg']);
+                }
+            }
             Db::commit();
             return true;
         } catch (\Exception $e) {

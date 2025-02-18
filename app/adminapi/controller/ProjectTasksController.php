@@ -55,18 +55,24 @@ class ProjectTasksController extends BaseAdminController
         $params = (new ProjectTasksValidate())->post()->goCheck('add');
         $params['creator'] = $this->adminId;
         $admin = Admin::where('id', $this->adminId)->findOrEmpty();
+        $msg = null;
         if (empty($admin->company_img)){
-            return $this->fail('请先上传营业执照');
+            $msg = '请先上传营业执照';
+            return $this->success('添加成功', ['msg'=>$msg], 1, 1);
+
         }
         if (empty($admin->ld_licence_img)){
-            return $this->fail('请先上传劳务派遣资质');
+            $msg = '请先上传劳务派遣资质';
+            return $this->success('添加成功', ['msg'=>$msg], 1, 1);
+
         }
         if (empty($admin->hr_licence_img)){
-            return $this->fail('请先上传人力资源许可证');
+            $msg = '请先上传人力资源资质';
+            return $this->success('添加成功', ['msg'=>$msg], 1, 1);
         }
         $result = ProjectTasksLogic::add($params);
         if (true === $result) {
-            return $this->success('添加成功', [], 1, 1);
+            return $this->success('添加成功', ['msg'=>$msg], 1, 1);
         }
         return $this->fail(ProjectTasksLogic::getError());
     }
@@ -80,6 +86,8 @@ class ProjectTasksController extends BaseAdminController
      */
     public function edit()
     {
+        return $this->fail('请先上传营业执照');
+
         $params = (new ProjectTasksValidate())->post()->goCheck('edit');
         $result = ProjectTasksLogic::edit($params);
         if (true === $result) {

@@ -20,6 +20,7 @@ use app\adminapi\controller\BaseAdminController;
 use app\adminapi\lists\ProjectTasksAuditLists;
 use app\adminapi\logic\ProjectTasksAuditLogic;
 use app\adminapi\validate\ProjectTasksAuditValidate;
+use app\common\model\auth\Admin;
 use app\common\model\ProjectTasksAudit;
 
 /**
@@ -113,11 +114,15 @@ class ProjectTasksAuditController extends BaseAdminController
     {
         $params = (new ProjectTasksAuditValidate())->post()->goCheck('audited');
 
-        $count = ProjectTasksAudit::where(['user_id' => $params['user_id'], 'status' => 2])->whereIn('type',[2,3])->count();
+        $adminInfo = Admin::where('id', $this->adminId)->find();
+        if ($adminInfo->user_money < 100) {
+            return $this->fail('余额不足100元，请充值后在发起签署合同流程');
+        }
+        $audit = ProjectTasksAudit::find($params['id']);
+        $count = ProjectTasksAudit::where(['user_id' => $audit['user_id'], 'status' => 2])->whereIn('type',[2,3])->count();
         if ($count >= 1) {
             return $this->fail('对方已被签约');
         }
-        $params['user_id'] = $this->adminId;
         $result = ProjectTasksAuditLogic::audited($params);
         if ($result  === true) {
             return $this->success("审核成功", [], 1, 1);
