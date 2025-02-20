@@ -16,16 +16,16 @@ namespace app\adminapi\lists;
 
 
 use app\adminapi\lists\BaseAdminDataLists;
-use app\common\model\ProjectReport;
+use app\common\model\MyStaff;
 use app\common\lists\ListsSearchInterface;
 
 
 /**
- * ProjectReport列表
- * Class ProjectReportLists
+ * MyStaff列表
+ * Class MyStaffLists
  * @package app\adminapi\lists
  */
-class ProjectReportLists extends BaseAdminDataLists implements ListsSearchInterface
+class MyStaffLists extends BaseAdminDataLists implements ListsSearchInterface
 {
 
 
@@ -33,12 +33,12 @@ class ProjectReportLists extends BaseAdminDataLists implements ListsSearchInterf
      * @notes 设置搜索条件
      * @return \string[][]
      * @author likeadmin
-     * @date 2025/02/18 18:01
+     * @date 2025/02/20 16:14
      */
     public function setSearch(): array
     {
         return [
-            '=' => ['admin_id', 'user_id', 'project_tasks_id', 'date', 'mianshi_num', 'ruzhi_num', 'daidaogang_num', 'daogang_num', 'liushi_num', 'lizhi_num', 'company_amount', 'jiesuan_amount', 'status'],
+            
         ];
     }
 
@@ -50,16 +50,12 @@ class ProjectReportLists extends BaseAdminDataLists implements ListsSearchInterf
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      * @author likeadmin
-     * @date 2025/02/18 18:01
+     * @date 2025/02/20 16:14
      */
     public function lists(): array
     {
-        return ProjectReport::where($this->searchWhere)
-            ->with(['projectTasks','user'])
-            ->field(['id', 'admin_id', 'user_id', 'project_tasks_id', 'date', 'mianshi_num', 'ruzhi_num', 'daidaogang_num', 'daogang_num', 'liushi_num', 'lizhi_num', 'company_amount', 'jiesuan_amount', 'status'])
-            ->when(in_array(1, $this->adminInfo['role_id']), function ($query) {
-                $query->where('admin_id', '=', $this->adminId);
-            })
+        return MyStaff::where($this->searchWhere)
+            ->field(['id', 'admin_id', 'name', 'invitecode'])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])
             ->select()
@@ -71,13 +67,11 @@ class ProjectReportLists extends BaseAdminDataLists implements ListsSearchInterf
      * @notes 获取数量
      * @return int
      * @author likeadmin
-     * @date 2025/02/18 18:01
+     * @date 2025/02/20 16:14
      */
     public function count(): int
     {
-        return ProjectReport::where($this->searchWhere)->when(in_array(1, $this->adminInfo['role_id']), function ($query) {
-            $query->where('admin_id', '=', $this->adminId);;
-        })->count();
+        return MyStaff::where($this->searchWhere)->count();
     }
 
 }

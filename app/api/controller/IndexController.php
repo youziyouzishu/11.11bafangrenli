@@ -22,6 +22,8 @@ use app\adminapi\service\FundTransPagePay;
 use app\api\logic\IndexLogic;
 use app\adminapi\logic\ConfigLogic;
 use app\api\service\PayService;
+use app\common\model\auth\Admin;
+use app\common\model\auth\AdminRole;
 use app\common\model\ProjectReport;
 use app\common\model\ProjectTasks;
 use app\common\model\ProjectTasksAudit;
@@ -135,24 +137,13 @@ class IndexController extends BaseApiController
     }
     function ccccc()
     {
-
-
-//
-//        Pay::config(config('payment'));
-//        $params = array();
-//        // 设置个人签约产品码
-//        $params['personal_product_code'] = 'FUND_SAFT_SIGN_WITHHOLDING_P';
-//        $params['sign_scene'] = 'INDUSTRY|SATF_ACC';
-//        $params['access_params'] = ['channel'=>'QRCODE'];
-//        $params['product_code'] = 'FUND_SAFT_SIGN_WITHHOLDING';
-//        $params['external_agreement_no'] = 1;
-//        $params['third_party_type'] = 'PARTNER';
-//        $params['_method'] = 'GET';
-//        $allPlugins = Pay::alipay()->mergeCommonPlugins([SignPlugin::class, ResponseHtmlPlugin::class]);
-//        $result = Pay::alipay()->pay($allPlugins, $params);
-//        $url = $result->getHeader('Location')[0];
-//
-//        return redirect($url);
+        $admin_roles = AdminRole::select();
+        foreach ($admin_roles as $admin_role ){
+            $admin = Admin::where('id',$admin_role['admin_id'])->find();
+            if (!$admin){
+                AdminRole::where(['admin_id'=>$admin_role['admin_id'],'role_id'=>$admin_role['role_id']])->delete();
+            }
+        }
     }
 
     /**

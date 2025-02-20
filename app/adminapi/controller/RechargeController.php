@@ -95,7 +95,7 @@ class RechargeController extends BaseAdminController
             // 使用构建器创建 QR Code
             $writer = new PngWriter();
             $qrCode = new QrCode(
-                data: $result->code_url,
+                data: isset($result->code_url)?$result->code_url:$result->qr_code,
                 encoding: new Encoding('UTF-8'),
                 errorCorrectionLevel: ErrorCorrectionLevel::Low,
                 size: 100,
