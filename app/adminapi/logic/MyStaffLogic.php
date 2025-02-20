@@ -17,6 +17,7 @@ namespace app\adminapi\logic;
 
 use app\common\model\MyStaff;
 use app\common\logic\BaseLogic;
+use app\common\tool\Util;
 use think\facade\Db;
 
 
@@ -43,7 +44,7 @@ class MyStaffLogic extends BaseLogic
             MyStaff::create([
                 'admin_id' => $params['admin_id'],
                 'name' => $params['name'],
-                'invitecode' => $params['invitecode']
+                'invitecode' => Util::generateAdminInvitecode()
             ]);
 
             Db::commit();

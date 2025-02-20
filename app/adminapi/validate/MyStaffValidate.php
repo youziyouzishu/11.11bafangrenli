@@ -58,7 +58,7 @@ class MyStaffValidate extends BaseValidate
      */
     public function sceneAdd()
     {
-        return $this->only(['name','invitecode']);
+        return $this->only(['name']);
     }
 
 
@@ -70,7 +70,7 @@ class MyStaffValidate extends BaseValidate
      */
     public function sceneEdit()
     {
-        return $this->only(['id','name','invitecode']);
+        return $this->only(['id','name']);
     }
 
 
