@@ -19,11 +19,11 @@ use app\common\validate\BaseValidate;
 
 
 /**
- * MyStaff验证器
- * Class MyStaffValidate
+ * MyStaffLayer验证器
+ * Class MyStaffLayerValidate
  * @package app\adminapi\validate
  */
-class MyStaffValidate extends BaseValidate
+class MyStaffLayerValidate extends BaseValidate
 {
 
      /**
@@ -32,9 +32,8 @@ class MyStaffValidate extends BaseValidate
       */
     protected $rule = [
         'id' => 'require',
-        'admin_id' => 'require',
-        'name' => 'require',
-        'invitecode' => 'require',
+        'my_staff_id' => 'require',
+        'user_id' => 'require',
     ];
 
 
@@ -44,41 +43,40 @@ class MyStaffValidate extends BaseValidate
      */
     protected $field = [
         'id' => 'id',
-        'admin_id' => '后台',
-        'name' => '业务员名称',
-        'invitecode' => '业务员邀请码',
+        'my_staff_id' => '员工',
+        'user_id' => '用户',
     ];
 
 
     /**
      * @notes 添加场景
-     * @return MyStaffValidate
+     * @return MyStaffLayerValidate
      * @author likeadmin
-     * @date 2025/02/20 16:14
+     * @date 2025/02/20 16:49
      */
     public function sceneAdd()
     {
-        return $this->only(['name','invitecode']);
+        return $this->only(['my_staff_id','user_id']);
     }
 
 
     /**
      * @notes 编辑场景
-     * @return MyStaffValidate
+     * @return MyStaffLayerValidate
      * @author likeadmin
-     * @date 2025/02/20 16:14
+     * @date 2025/02/20 16:49
      */
     public function sceneEdit()
     {
-        return $this->only(['id','name','invitecode']);
+        return $this->only(['id','my_staff_id','user_id']);
     }
 
 
     /**
      * @notes 删除场景
-     * @return MyStaffValidate
+     * @return MyStaffLayerValidate
      * @author likeadmin
-     * @date 2025/02/20 16:14
+     * @date 2025/02/20 16:49
      */
     public function sceneDelete()
     {
@@ -88,9 +86,9 @@ class MyStaffValidate extends BaseValidate
 
     /**
      * @notes 详情场景
-     * @return MyStaffValidate
+     * @return MyStaffLayerValidate
      * @author likeadmin
-     * @date 2025/02/20 16:14
+     * @date 2025/02/20 16:49
      */
     public function sceneDetail()
     {

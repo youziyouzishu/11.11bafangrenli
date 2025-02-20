@@ -17,17 +17,17 @@ namespace app\adminapi\controller;
 
 
 use app\adminapi\controller\BaseAdminController;
-use app\adminapi\lists\MyStaffLists;
-use app\adminapi\logic\MyStaffLogic;
-use app\adminapi\validate\MyStaffValidate;
+use app\adminapi\lists\MyStaffLayerLists;
+use app\adminapi\logic\MyStaffLayerLogic;
+use app\adminapi\validate\MyStaffLayerValidate;
 
 
 /**
- * MyStaff控制器
- * Class MyStaffController
+ * MyStaffLayer控制器
+ * Class MyStaffLayerController
  * @package app\adminapi\controller
  */
-class MyStaffController extends BaseAdminController
+class MyStaffLayerController extends BaseAdminController
 {
 
 
@@ -35,11 +35,11 @@ class MyStaffController extends BaseAdminController
      * @notes 获取列表
      * @return \think\response\Json
      * @author likeadmin
-     * @date 2025/02/20 16:14
+     * @date 2025/02/20 16:49
      */
     public function lists()
     {
-        return $this->dataLists(new MyStaffLists());
+        return $this->dataLists(new MyStaffLayerLists());
     }
 
 
@@ -47,17 +47,16 @@ class MyStaffController extends BaseAdminController
      * @notes 添加
      * @return \think\response\Json
      * @author likeadmin
-     * @date 2025/02/20 16:14
+     * @date 2025/02/20 16:49
      */
     public function add()
     {
-        $params = (new MyStaffValidate())->post()->goCheck('add');
-        $params['admin_id'] = $this->adminId;
-        $result = MyStaffLogic::add($params);
+        $params = (new MyStaffLayerValidate())->post()->goCheck('add');
+        $result = MyStaffLayerLogic::add($params);
         if (true === $result) {
             return $this->success('添加成功', [], 1, 1);
         }
-        return $this->fail(MyStaffLogic::getError());
+        return $this->fail(MyStaffLayerLogic::getError());
     }
 
 
@@ -65,16 +64,16 @@ class MyStaffController extends BaseAdminController
      * @notes 编辑
      * @return \think\response\Json
      * @author likeadmin
-     * @date 2025/02/20 16:14
+     * @date 2025/02/20 16:49
      */
     public function edit()
     {
-        $params = (new MyStaffValidate())->post()->goCheck('edit');
-        $result = MyStaffLogic::edit($params);
+        $params = (new MyStaffLayerValidate())->post()->goCheck('edit');
+        $result = MyStaffLayerLogic::edit($params);
         if (true === $result) {
             return $this->success('编辑成功', [], 1, 1);
         }
-        return $this->fail(MyStaffLogic::getError());
+        return $this->fail(MyStaffLayerLogic::getError());
     }
 
 
@@ -82,12 +81,12 @@ class MyStaffController extends BaseAdminController
      * @notes 删除
      * @return \think\response\Json
      * @author likeadmin
-     * @date 2025/02/20 16:14
+     * @date 2025/02/20 16:49
      */
     public function delete()
     {
-        $params = (new MyStaffValidate())->post()->goCheck('delete');
-        MyStaffLogic::delete($params);
+        $params = (new MyStaffLayerValidate())->post()->goCheck('delete');
+        MyStaffLayerLogic::delete($params);
         return $this->success('删除成功', [], 1, 1);
     }
 
@@ -96,12 +95,12 @@ class MyStaffController extends BaseAdminController
      * @notes 获取详情
      * @return \think\response\Json
      * @author likeadmin
-     * @date 2025/02/20 16:14
+     * @date 2025/02/20 16:49
      */
     public function detail()
     {
-        $params = (new MyStaffValidate())->goCheck('detail');
-        $result = MyStaffLogic::detail($params);
+        $params = (new MyStaffLayerValidate())->goCheck('detail');
+        $result = MyStaffLayerLogic::detail($params);
         return $this->data($result);
     }
 

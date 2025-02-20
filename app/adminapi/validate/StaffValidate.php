@@ -32,7 +32,6 @@ class StaffValidate extends BaseValidate
       */
     protected $rule = [
         'id' => 'require',
-        'admin_id' => 'require',
         'name' => 'require',
     ];
 
@@ -68,7 +67,7 @@ class StaffValidate extends BaseValidate
      */
     public function sceneEdit()
     {
-        return $this->only(['id','admin_id','name']);
+        return $this->only(['id','name']);
     }
 
 
