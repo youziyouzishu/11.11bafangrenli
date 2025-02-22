@@ -26,7 +26,7 @@ use think\facade\Db;
  * Class MyStaffLogic
  * @package app\adminapi\logic
  */
-class MyStaffLogic extends BaseLogic
+class StaffsLogic extends BaseLogic
 {
 
 

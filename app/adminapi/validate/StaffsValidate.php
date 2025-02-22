@@ -23,7 +23,7 @@ use app\common\validate\BaseValidate;
  * Class MyStaffValidate
  * @package app\adminapi\validate
  */
-class MyStaffValidate extends BaseValidate
+class StaffsValidate extends BaseValidate
 {
 
      /**
@@ -45,14 +45,14 @@ class MyStaffValidate extends BaseValidate
     protected $field = [
         'id' => 'id',
         'admin_id' => '后台',
-        'name' => '业务员名称',
-        'invitecode' => '业务员邀请码',
+        'name' => '员工',
+        'invitecode' => '员工邀请码',
     ];
 
 
     /**
      * @notes 添加场景
-     * @return MyStaffValidate
+     * @return StaffsValidate
      * @author likeadmin
      * @date 2025/02/20 16:14
      */
@@ -64,7 +64,7 @@ class MyStaffValidate extends BaseValidate
 
     /**
      * @notes 编辑场景
-     * @return MyStaffValidate
+     * @return StaffsValidate
      * @author likeadmin
      * @date 2025/02/20 16:14
      */
@@ -76,7 +76,7 @@ class MyStaffValidate extends BaseValidate
 
     /**
      * @notes 删除场景
-     * @return MyStaffValidate
+     * @return StaffsValidate
      * @author likeadmin
      * @date 2025/02/20 16:14
      */
@@ -88,7 +88,7 @@ class MyStaffValidate extends BaseValidate
 
     /**
      * @notes 详情场景
-     * @return MyStaffValidate
+     * @return StaffsValidate
      * @author likeadmin
      * @date 2025/02/20 16:14
      */

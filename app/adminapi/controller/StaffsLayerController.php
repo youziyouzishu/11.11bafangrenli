@@ -17,9 +17,9 @@ namespace app\adminapi\controller;
 
 
 use app\adminapi\controller\BaseAdminController;
-use app\adminapi\lists\MyStaffLayerLists;
-use app\adminapi\logic\MyStaffLayerLogic;
-use app\adminapi\validate\MyStaffLayerValidate;
+use app\adminapi\lists\StaffsLayerLists;
+use app\adminapi\logic\StaffsLayerLogic;
+use app\adminapi\validate\StaffsLayerValidate;
 
 
 /**
@@ -27,7 +27,7 @@ use app\adminapi\validate\MyStaffLayerValidate;
  * Class MyStaffLayerController
  * @package app\adminapi\controller
  */
-class MyStaffLayerController extends BaseAdminController
+class StaffsLayerController extends BaseAdminController
 {
 
 
@@ -39,7 +39,7 @@ class MyStaffLayerController extends BaseAdminController
      */
     public function lists()
     {
-        return $this->dataLists(new MyStaffLayerLists());
+        return $this->dataLists(new StaffsLayerLists());
     }
 
 
@@ -51,12 +51,12 @@ class MyStaffLayerController extends BaseAdminController
      */
     public function add()
     {
-        $params = (new MyStaffLayerValidate())->post()->goCheck('add');
-        $result = MyStaffLayerLogic::add($params);
+        $params = (new StaffsLayerValidate())->post()->goCheck('add');
+        $result = StaffsLayerLogic::add($params);
         if (true === $result) {
             return $this->success('添加成功', [], 1, 1);
         }
-        return $this->fail(MyStaffLayerLogic::getError());
+        return $this->fail(StaffsLayerLogic::getError());
     }
 
 
@@ -68,12 +68,12 @@ class MyStaffLayerController extends BaseAdminController
      */
     public function edit()
     {
-        $params = (new MyStaffLayerValidate())->post()->goCheck('edit');
-        $result = MyStaffLayerLogic::edit($params);
+        $params = (new StaffsLayerValidate())->post()->goCheck('edit');
+        $result = StaffsLayerLogic::edit($params);
         if (true === $result) {
             return $this->success('编辑成功', [], 1, 1);
         }
-        return $this->fail(MyStaffLayerLogic::getError());
+        return $this->fail(StaffsLayerLogic::getError());
     }
 
 
@@ -85,8 +85,8 @@ class MyStaffLayerController extends BaseAdminController
      */
     public function delete()
     {
-        $params = (new MyStaffLayerValidate())->post()->goCheck('delete');
-        MyStaffLayerLogic::delete($params);
+        $params = (new StaffsLayerValidate())->post()->goCheck('delete');
+        StaffsLayerLogic::delete($params);
         return $this->success('删除成功', [], 1, 1);
     }
 
@@ -99,8 +99,8 @@ class MyStaffLayerController extends BaseAdminController
      */
     public function detail()
     {
-        $params = (new MyStaffLayerValidate())->goCheck('detail');
-        $result = MyStaffLayerLogic::detail($params);
+        $params = (new StaffsLayerValidate())->goCheck('detail');
+        $result = StaffsLayerLogic::detail($params);
         return $this->data($result);
     }
 

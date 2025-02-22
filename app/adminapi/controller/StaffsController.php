@@ -17,9 +17,9 @@ namespace app\adminapi\controller;
 
 
 use app\adminapi\controller\BaseAdminController;
-use app\adminapi\lists\MyStaffLists;
-use app\adminapi\logic\MyStaffLogic;
-use app\adminapi\validate\MyStaffValidate;
+use app\adminapi\lists\StaffsLists;
+use app\adminapi\logic\StaffsLogic;
+use app\adminapi\validate\StaffsValidate;
 
 
 /**
@@ -27,7 +27,7 @@ use app\adminapi\validate\MyStaffValidate;
  * Class MyStaffController
  * @package app\adminapi\controller
  */
-class MyStaffController extends BaseAdminController
+class StaffsController extends BaseAdminController
 {
 
 
@@ -39,7 +39,7 @@ class MyStaffController extends BaseAdminController
      */
     public function lists()
     {
-        return $this->dataLists(new MyStaffLists());
+        return $this->dataLists(new StaffsLists());
     }
 
 
@@ -51,13 +51,13 @@ class MyStaffController extends BaseAdminController
      */
     public function add()
     {
-        $params = (new MyStaffValidate())->post()->goCheck('add');
+        $params = (new StaffsValidate())->post()->goCheck('add');
         $params['admin_id'] = $this->adminId;
-        $result = MyStaffLogic::add($params);
+        $result = StaffsLogic::add($params);
         if (true === $result) {
             return $this->success('添加成功', [], 1, 1);
         }
-        return $this->fail(MyStaffLogic::getError());
+        return $this->fail(StaffsLogic::getError());
     }
 
 
@@ -69,12 +69,12 @@ class MyStaffController extends BaseAdminController
      */
     public function edit()
     {
-        $params = (new MyStaffValidate())->post()->goCheck('edit');
-        $result = MyStaffLogic::edit($params);
+        $params = (new StaffsValidate())->post()->goCheck('edit');
+        $result = StaffsLogic::edit($params);
         if (true === $result) {
             return $this->success('编辑成功', [], 1, 1);
         }
-        return $this->fail(MyStaffLogic::getError());
+        return $this->fail(StaffsLogic::getError());
     }
 
 
@@ -86,8 +86,8 @@ class MyStaffController extends BaseAdminController
      */
     public function delete()
     {
-        $params = (new MyStaffValidate())->post()->goCheck('delete');
-        MyStaffLogic::delete($params);
+        $params = (new StaffsValidate())->post()->goCheck('delete');
+        StaffsLogic::delete($params);
         return $this->success('删除成功', [], 1, 1);
     }
 
@@ -100,8 +100,8 @@ class MyStaffController extends BaseAdminController
      */
     public function detail()
     {
-        $params = (new MyStaffValidate())->goCheck('detail');
-        $result = MyStaffLogic::detail($params);
+        $params = (new StaffsValidate())->goCheck('detail');
+        $result = StaffsLogic::detail($params);
         return $this->data($result);
     }
 

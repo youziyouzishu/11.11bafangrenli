@@ -21,6 +21,9 @@ use app\api\validate\SetUserInfoValidate;
 use app\api\validate\UserValidate;
 use app\common\http\esign\OrganizeAuth;
 use app\common\cache\UserTokenCache;
+use app\common\model\Staffs;
+use app\common\model\StaffsLayer;
+use app\Request;
 
 /**
  * 用户控制器
@@ -179,11 +182,25 @@ class UserController extends BaseApiController
      * @author 张晓科
      * @date 2023/9/21 17:29
      */
-    public function realnameVerify()
+    public function realnameVerify(Request $request)
     {
         $params = (new UserValidate())->post()->goCheck('realnameVerify');
         //$flowInfo = OrganizeAuth::queryAuthFlow("OF-306fc2d233080009");
 
+        $invitecode =  $request->post('invitecode');
+        if (!empty($invitecode)){
+            $row = Staffs::where('invitecode',$invitecode)->find();
+            if (!$row){
+                return $this->fail("邀请码错误");
+            }
+            if (!StaffsLayer::where(['user_id',$this->userId])->exists()){
+                StaffsLayer::create([
+                    'my_staff_id'=>$row->id,
+                    'user_id'=>$this->userId,
+                ]);
+            }
+
+        }
         $params2['user_id'] = $this->userId;
         $params2['psn_name'] = $params['real_name'];
         $params2['psn_id_card_num'] =  $params['id_card'];

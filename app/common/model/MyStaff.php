@@ -24,10 +24,10 @@ use think\model\concern\SoftDelete;
  * Class MyStaff
  * @package app\common\model
  */
-class MyStaff extends BaseModel
+class Staffs extends BaseModel
 {
     use SoftDelete;
-    protected $name = 'my_staff';
+    protected $name = 'staffs';
     protected $deleteTime = 'delete_time';
 
     

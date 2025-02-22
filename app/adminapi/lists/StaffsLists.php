@@ -16,16 +16,16 @@ namespace app\adminapi\lists;
 
 
 use app\adminapi\lists\BaseAdminDataLists;
-use app\common\model\MyStaffLayer;
+use app\common\model\MyStaff;
 use app\common\lists\ListsSearchInterface;
 
 
 /**
- * MyStaffLayer列表
- * Class MyStaffLayerLists
+ * MyStaff列表
+ * Class MyStaffLists
  * @package app\adminapi\lists
  */
-class MyStaffLayerLists extends BaseAdminDataLists implements ListsSearchInterface
+class StaffsLists extends BaseAdminDataLists implements ListsSearchInterface
 {
 
 
@@ -33,12 +33,12 @@ class MyStaffLayerLists extends BaseAdminDataLists implements ListsSearchInterfa
      * @notes 设置搜索条件
      * @return \string[][]
      * @author likeadmin
-     * @date 2025/02/20 16:49
+     * @date 2025/02/20 16:14
      */
     public function setSearch(): array
     {
         return [
-            '=' => ['my_staff_id', 'user_id'],
+            
         ];
     }
 
@@ -50,12 +50,12 @@ class MyStaffLayerLists extends BaseAdminDataLists implements ListsSearchInterfa
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      * @author likeadmin
-     * @date 2025/02/20 16:49
+     * @date 2025/02/20 16:14
      */
     public function lists(): array
     {
-        return MyStaffLayer::where($this->searchWhere)
-            ->field(['id', 'my_staff_id', 'user_id'])
+        return MyStaff::where($this->searchWhere)
+            ->field(['id', 'admin_id', 'name', 'invitecode'])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])
             ->select()
@@ -67,11 +67,11 @@ class MyStaffLayerLists extends BaseAdminDataLists implements ListsSearchInterfa
      * @notes 获取数量
      * @return int
      * @author likeadmin
-     * @date 2025/02/20 16:49
+     * @date 2025/02/20 16:14
      */
     public function count(): int
     {
-        return MyStaffLayer::where($this->searchWhere)->count();
+        return MyStaff::where($this->searchWhere)->count();
     }
 
 }

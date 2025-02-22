@@ -23,7 +23,7 @@ use app\common\validate\BaseValidate;
  * Class MyStaffLayerValidate
  * @package app\adminapi\validate
  */
-class MyStaffLayerValidate extends BaseValidate
+class StaffsLayerValidate extends BaseValidate
 {
 
      /**
@@ -32,7 +32,7 @@ class MyStaffLayerValidate extends BaseValidate
       */
     protected $rule = [
         'id' => 'require',
-        'my_staff_id' => 'require',
+        'staffs_id' => 'require',
         'user_id' => 'require',
     ];
 
@@ -43,38 +43,38 @@ class MyStaffLayerValidate extends BaseValidate
      */
     protected $field = [
         'id' => 'id',
-        'my_staff_id' => '员工',
+        'staffs_id' => '员工',
         'user_id' => '用户',
     ];
 
 
     /**
      * @notes 添加场景
-     * @return MyStaffLayerValidate
+     * @return StaffsLayerValidate
      * @author likeadmin
      * @date 2025/02/20 16:49
      */
     public function sceneAdd()
     {
-        return $this->only(['my_staff_id','user_id']);
+        return $this->only(['staffs_id','user_id']);
     }
 
 
     /**
      * @notes 编辑场景
-     * @return MyStaffLayerValidate
+     * @return StaffsLayerValidate
      * @author likeadmin
      * @date 2025/02/20 16:49
      */
     public function sceneEdit()
     {
-        return $this->only(['id','my_staff_id','user_id']);
+        return $this->only(['id','staffs_id','user_id']);
     }
 
 
     /**
      * @notes 删除场景
-     * @return MyStaffLayerValidate
+     * @return StaffsLayerValidate
      * @author likeadmin
      * @date 2025/02/20 16:49
      */
@@ -86,7 +86,7 @@ class MyStaffLayerValidate extends BaseValidate
 
     /**
      * @notes 详情场景
-     * @return MyStaffLayerValidate
+     * @return StaffsLayerValidate
      * @author likeadmin
      * @date 2025/02/20 16:49
      */
