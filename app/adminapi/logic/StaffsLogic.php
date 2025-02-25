@@ -17,6 +17,7 @@ namespace app\adminapi\logic;
 
 use app\common\model\MyStaff;
 use app\common\logic\BaseLogic;
+use app\common\model\Staffs;
 use app\common\tool\Util;
 use think\facade\Db;
 
@@ -41,7 +42,7 @@ class StaffsLogic extends BaseLogic
     {
         Db::startTrans();
         try {
-            MyStaff::create([
+            Staffs::create([
                 'admin_id' => $params['admin_id'],
                 'name' => $params['name'],
                 'invitecode' => Util::generateAdminInvitecode()
@@ -68,7 +69,7 @@ class StaffsLogic extends BaseLogic
     {
         Db::startTrans();
         try {
-            MyStaff::where('id', $params['id'])->update([
+            Staffs::where('id', $params['id'])->update([
                 'admin_id' => $params['admin_id'],
                 'name' => $params['name'],
                 'invitecode' => $params['invitecode']
@@ -93,7 +94,7 @@ class StaffsLogic extends BaseLogic
      */
     public static function delete(array $params): bool
     {
-        return MyStaff::destroy($params['id']);
+        return Staffs::destroy($params['id']);
     }
 
 
@@ -106,6 +107,6 @@ class StaffsLogic extends BaseLogic
      */
     public static function detail($params): array
     {
-        return MyStaff::findOrEmpty($params['id'])->toArray();
+        return Staffs::findOrEmpty($params['id'])->toArray();
     }
 }

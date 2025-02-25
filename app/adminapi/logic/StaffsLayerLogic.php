@@ -15,8 +15,8 @@
 namespace app\adminapi\logic;
 
 
-use app\common\model\MyStaffLayer;
 use app\common\logic\BaseLogic;
+use app\common\model\StaffsLayer;
 use think\facade\Db;
 
 
@@ -40,7 +40,7 @@ class StaffsLayerLogic extends BaseLogic
     {
         Db::startTrans();
         try {
-            MyStaffLayer::create([
+            StaffsLayer::create([
                 'my_staff_id' => $params['my_staff_id'],
                 'user_id' => $params['user_id']
             ]);
@@ -66,7 +66,7 @@ class StaffsLayerLogic extends BaseLogic
     {
         Db::startTrans();
         try {
-            MyStaffLayer::where('id', $params['id'])->update([
+            StaffsLayer::where('id', $params['id'])->update([
                 'my_staff_id' => $params['my_staff_id'],
                 'user_id' => $params['user_id']
             ]);
@@ -90,7 +90,7 @@ class StaffsLayerLogic extends BaseLogic
      */
     public static function delete(array $params): bool
     {
-        return MyStaffLayer::destroy($params['id']);
+        return StaffsLayer::destroy($params['id']);
     }
 
 
