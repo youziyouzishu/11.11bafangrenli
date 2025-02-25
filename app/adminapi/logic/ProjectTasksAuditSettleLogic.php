@@ -20,6 +20,7 @@ use app\common\model\auth\Admin;
 use app\common\model\ProjectTasksAudit;
 use app\common\model\ProjectTasksAuditSettle;
 use app\common\logic\BaseLogic;
+use think\facade\Cache;
 use think\facade\Db;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Sign\SignPlugin;
@@ -77,10 +78,13 @@ class ProjectTasksAuditSettleLogic extends BaseLogic
     {
         Db::startTrans();
         try {
-
-
             $row = ProjectTasksAuditSettle::where('id', $params['id'])->find();
-            if ($row['status'] == 2 && $params['status'] == 4) {
+            if ($row['status'] == 3 && $params['status'] == 5) {
+                $cache = Cache::get('settlement_'.$row->id);
+                if ($cache){
+                    throw new \Exception('禁止重复提交');
+                }
+                Cache::set('settlement_'.$row->id,true);
                //进行打款
                 $admin = Admin::where('id',$row->admin_id)->find();
                 Pay::config(config('payment'));
@@ -92,21 +96,17 @@ class ProjectTasksAuditSettleLogic extends BaseLogic
                 $param['biz_scene'] = 'ENTRUST_TRANSFER';
                 $param['payer_info'] = ['identity_type'=>'ACCOUNT_BOOK_ID','identity'=>$admin->account_book_id,'ext_info'=>json_encode(['agreement_no'=>$admin->agreement_no])];
                 $param['order_title'] = '结算代发';
-                $param['payee_info'] = ['identity_type'=>'ALIPAY_LOGON_ID','identity'=>$row['ali_account']];
+                $param['payee_info'] = ['identity_type'=>'ALIPAY_LOGON_ID','identity'=>$row['ali_account'],'name'=>$row['ali_name']];
                 $allPlugins = Pay::alipay()->mergeCommonPlugins([FundTransUniTransfer::class]);
                 $result = Pay::alipay()->pay($allPlugins, $param);
                 $result = $result->get();
-                if ($result['code'] == '10000'){
-                    $row->name = $params['name'];
-                    $row->amount = $params['amount'];
-                    $row->num = $params['num'];
-                    $row->ali_account = $params['ali_account'];
-                    $row->status = $params['status'];
-                    $row->save();
-                }else {
-                    throw new \Exception($result['msg']);
+                if ($result['code'] != '10000'){
+                    throw new \Exception($result['sub_msg']);
                 }
+                Cache::delete('settlement_'.$row->id);
             }
+            $row->status = $params['status'];
+            $row->save();
             Db::commit();
             return true;
         } catch (\Exception $e) {

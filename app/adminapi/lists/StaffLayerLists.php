@@ -16,6 +16,7 @@ namespace app\adminapi\lists;
 
 
 use app\adminapi\lists\BaseAdminDataLists;
+use app\common\model\recharge\RechargeOrder;
 use app\common\model\StaffLayer;
 use app\common\lists\ListsSearchInterface;
 
@@ -56,7 +57,10 @@ class StaffLayerLists extends BaseAdminDataLists implements ListsSearchInterface
     public function lists(): array
     {
         return StaffLayer::where($this->searchWhere)
-            ->field(['id', 'staff_id', 'admin_id'])
+            ->with(['admin'])
+            ->filter(function ($item){
+                $item->consume_amount = RechargeOrder::where(['user_id'=>$item->admin_id,'type'=>'ORG','pay_status'=>1,'refund_status'=>0])->sum('order_amount');
+            })
             ->where(['staff_id'=>$this->params['staff_id']])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])

@@ -62,7 +62,7 @@ class ContractLogLists extends BaseApiDataLists
     public function lists(): array
     {
 
-        $lists = EContract::with(['projectinfo', 'enterpriseVerification'])
+        $lists = EContract::with(['projectinfo', 'enterpriseVerification','admin'])
             ->where($this->queryWhere())
             ->order('id', 'desc')
             ->limit($this->limitOffset, $this->limitLength)

@@ -15,6 +15,7 @@
 namespace app\common\model;
 
 
+use app\common\model\auth\Admin;
 use app\common\model\BaseModel;
 
 
@@ -29,6 +30,11 @@ class EContract extends BaseModel
 
     protected $name = 'e_contract';
 
+
+    function admin()
+    {
+        return $this->belongsTo(Admin::class,'user_id','id');
+    }
 
     public function personalVerification()
     {

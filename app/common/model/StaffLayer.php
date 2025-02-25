@@ -15,6 +15,7 @@
 namespace app\common\model;
 
 
+use app\common\model\auth\Admin;
 use app\common\model\BaseModel;
 
 
@@ -28,7 +29,10 @@ class StaffLayer extends BaseModel
 {
     
     protected $name = 'staff_layer';
-    
 
+    function admin()
+    {
+        return $this->belongsTo(Admin::class, 'admin_id', 'id');
+    }
     
 }

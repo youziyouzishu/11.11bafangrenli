@@ -379,11 +379,7 @@ class BusinessController extends BaseApiController
         if ($row->status != 0){
             return $this->fail('状态异常');
         }
-        if ($status == 1 ){
-            $row->status = 3;
-        }else{
-            $row->status = 2;
-        }
+        $row->status = $status;
         if(!empty($bank)){
             $row->bank = $bank;
         }
